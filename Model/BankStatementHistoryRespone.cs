@@ -1,6 +1,6 @@
 ﻿namespace TerrabitTest.Model;
 
-public class BankStatementHistoryReadResp
+public class BankStatementHistorySearchResp
 {
     public Guid Id { get; set; }
     public Guid BankAccountId { get; set; }
