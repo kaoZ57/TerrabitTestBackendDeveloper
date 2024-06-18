@@ -152,6 +152,7 @@ namespace TerrabitTest.Controllers
             {
                 Id = Guid.NewGuid(),
                 BankAccountId = bankAccountId,
+                UserIdTransferTo = bankAccountTransferToId,
                 Balance = request.Balance,
                 StatementType = (int)statementType,
                 IsActive = true,

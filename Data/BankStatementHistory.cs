@@ -15,6 +15,8 @@ public partial class BankStatementHistory
 
     public decimal Balance { get; set; }
 
+    public Guid? UserIdTransferTo { get; set; }
+
     public bool IsActive { get; set; }
 
     public bool IsDelete { get; set; }

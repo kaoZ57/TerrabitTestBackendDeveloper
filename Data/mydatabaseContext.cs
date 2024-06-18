@@ -47,6 +47,7 @@ public partial class mydatabaseContext : DbContext
             entity.Property(e => e.CreateDate).HasColumnType("datetime");
             entity.Property(e => e.DeleteDate).HasColumnType("datetime");
             entity.Property(e => e.UpdateDate).HasColumnType("datetime");
+            entity.Property(e => e.UserIdTransferTo).HasColumnName("UserId_TransferTo");
 
             entity.HasOne(d => d.BankAccount).WithMany(p => p.BankStatementHistories)
                 .HasForeignKey(d => d.BankAccountId)
