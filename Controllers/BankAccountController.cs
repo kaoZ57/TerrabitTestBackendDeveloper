@@ -65,13 +65,13 @@ namespace TerrabitTest.Controllers
                 return Ok(BadRequest("User is emtyp"));
             }
 
-            if (result.user.Gender == (int)GenderTypeEnum.Man && result.bankAccount.Balance >= 100)
+            if (result.user.Gender == (int)GenderTypeEnum.Man && request.Balance < 100)
             {
                 return Ok(BadRequest("Deposits can be made starting from 100 baht because you are male."));
             }
-            else if (result.user.Gender == (int)GenderTypeEnum.Femail && result.bankAccount.Balance >= 200)
+            if (result.user.Gender == (int)GenderTypeEnum.Female && request.Balance < 200)
             {
-                return Ok(BadRequest("Deposits can be made starting from 100 baht because you are female."));
+                return Ok(BadRequest("Deposits can be made starting from 200 baht because you are female."));
             }
 
             result.bankAccount.Balance = result.bankAccount.Balance += request.Balance;
