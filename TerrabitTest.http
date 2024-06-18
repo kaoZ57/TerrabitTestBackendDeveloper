@@ -1,0 +1,6 @@
+@TerrabitTest_HostAddress = http://localhost:5225
+
+GET {{TerrabitTest_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
