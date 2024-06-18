@@ -61,7 +61,7 @@ namespace TerrabitTest.Controllers
 
             if (result == null)
             {
-                return BadRequest("User is emtyp");
+                return Ok(BadRequest("User is emtyp"));
             }
 
             result.FirstName = request.FirstName;
@@ -79,7 +79,7 @@ namespace TerrabitTest.Controllers
 
             if (result == null)
             {
-                return BadRequest("User is emtyp");
+                return Ok(BadRequest("User is emtyp"));
             }
             else
             {

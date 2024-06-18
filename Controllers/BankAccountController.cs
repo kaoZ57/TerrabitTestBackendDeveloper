@@ -50,23 +50,38 @@ namespace TerrabitTest.Controllers
         }
 
         [HttpPost("Deposit/{id}")]
-        public async Task<ActionResult<BankAccountReadResp>> Deposit(Guid id,BankAccountDepositReq request)
+        public async Task<ActionResult<BankAccountReadResp>> Deposit(Guid id, BankAccountDepositReq request)
         {
-            var result = await _dbContext.BankAccounts.Where(t => t.Id == id).FirstOrDefaultAsync();
+            //var result = await _dbContext.BankAccounts.Where(t => t.Id == id).FirstOrDefaultAsync();
+            var result = await _dbContext.Users.Join(
+                _dbContext.BankAccounts,
+                user => user.Id,
+                bankAccount => bankAccount.Id,
+                (user, bankAccount) => new { user = user, bankAccount = bankAccount })
+                .Where(t => t.user.Id == id).FirstOrDefaultAsync();
 
             if (result == null)
             {
-                return BadRequest("User is emtyp");
+                return Ok(BadRequest("User is emtyp"));
             }
 
-            result.Balance = result.Balance += request.Balance;
+            if (result.user.Gender == (int)GenderTypeEnum.Man && result.bankAccount.Balance >= 100)
+            {
+                return Ok(BadRequest("Deposits can be made starting from 100 baht because you are male."));
+            }
+            else if (result.user.Gender == (int)GenderTypeEnum.Femail && result.bankAccount.Balance >= 200)
+            {
+                return Ok(BadRequest("Deposits can be made starting from 100 baht because you are female."));
+            }
 
-            var statementHistory = CreateBankStatementHistory(request,StatementType.Deposit, result.Id);
+            result.bankAccount.Balance = result.bankAccount.Balance += request.Balance;
+
+            var statementHistory = CreateBankStatementHistory(request, StatementType.Deposit, result.bankAccount.Id);
             _dbContext.BankStatementHistories.Add(statementHistory);
 
             await _dbContext.SaveChangesAsync();
 
-            return Ok(result);
+            return Ok(result.bankAccount);
         }
 
         [HttpPost("Withdrawal/{id}")]
@@ -76,7 +91,7 @@ namespace TerrabitTest.Controllers
 
             if (result == null)
             {
-                return BadRequest("User is emtyp");
+                return Ok(BadRequest("User is emtyp"));
             }
 
             result.Balance = result.Balance -= request.Balance;
@@ -98,13 +113,13 @@ namespace TerrabitTest.Controllers
 
             if (resultFrom == null || resultTo == null)
             {
-                return BadRequest("User is emtyp");
+                return Ok(BadRequest("User is emtyp"));
             }
 
             resultFrom.Balance = resultFrom.Balance -= request.Balance;
             resultTo.Balance = resultTo.Balance += request.Balance;
 
-            var statementHistory = CreateBankStatementHistory(request, StatementType.Transfer, resultFrom.Id,resultTo.Id);
+            var statementHistory = CreateBankStatementHistory(request, StatementType.Transfer, resultFrom.Id, resultTo.Id);
             _dbContext.BankStatementHistories.Add(statementHistory);
 
             await _dbContext.SaveChangesAsync();
@@ -120,7 +135,7 @@ namespace TerrabitTest.Controllers
 
             if (result == null)
             {
-                return BadRequest("User is emtyp");
+                return Ok(BadRequest("User is emtyp"));
             }
 
             result.IsActive = false;
